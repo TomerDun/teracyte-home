@@ -1,8 +1,9 @@
 import MetadataCard from "../components/HomeArea/MetadataCard";
+import ImageDisplayCard from "../components/HomeArea/ImageDisplayCard";
 
 export default function HomePage() {
     return (
-        <div id="home-page-container" className="h-svh">
+        <div id="home-page-container" className="h-full">
             <div id="header-container">
                 Image Analytics Dashboard
             </div>
@@ -12,13 +13,12 @@ export default function HomePage() {
                     <MetadataCard />
                 </div>
                 <div id="display-container" className="h-full w-[50%]">
-                    <div className="bg-white border border-gray-200 rounded-md">Image Display</div>
+                    <ImageDisplayCard />
                 </div>
                 <div id="charts-container" className="h-full w-[20%]">
                     <div className="bg-white border border-gray-200 rounded-md">Charts</div>
                 </div>
             </div>
-            #
         </div>
     )
 
