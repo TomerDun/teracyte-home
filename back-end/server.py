@@ -10,6 +10,7 @@ from core.security import get_password_hash
 
 
 from routers import auth as auth_router
+from routers import image_data as image_data_router
 
 
 Base.metadata.create_all(bind=engine)
@@ -87,6 +88,7 @@ async def test_create_user(user_data: UserCreate, db: Session = Depends(get_db))
 
 # Include routers
 api_router.include_router(auth_router.router)
+api_router.include_router(image_data_router.router)
 
 # Include the API router in the app
 app.include_router(api_router)
