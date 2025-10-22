@@ -1,0 +1,78 @@
+from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+
+# Import database and models
+from database import engine, Base, get_db
+from models.user import User
+from schemas.user import UserCreate, UserResponse
+from core.security import get_password_hash
+
+# Create database tables
+Base.metadata.create_all(bind=engine)
+
+# Create FastAPI app instance
+app = FastAPI(
+    title="Teracyte Home API",
+    description="Backend API for Teracyte Home application",
+    version="1.0.0"
+)
+
+# Configure CORS
+origins = [
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.get("/")
+async def root():    
+    return {        
+        "status": "running",        
+    }
+
+# Database test endpoint
+@app.get("/db-test")
+async def db_test(db: Session = Depends(get_db)):
+    """Test database connection and return user count"""
+    try:
+        user_count = db.query(User).count()
+        return {
+            "status": "success",
+            "message": "Database connected successfully",
+            "users_count": user_count
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": str(e)
+        }
+
+
+# Test endpoint to create a user (for testing only)
+@app.post("/test-create-user", response_model=UserResponse)
+async def test_create_user(user_data: UserCreate, db: Session = Depends(get_db)):
+    """Test endpoint to create a user (should be replaced with proper auth)"""
+    # Check if user exists
+    existing_user = db.query(User).filter(User.username == user_data.username).first()
+    if existing_user:
+        return {"error": "User already exists"}
+    
+    # Create new user
+    hashed_password = get_password_hash(user_data.password)
+    db_user = User(
+        username=user_data.username,
+        hashed_password=hashed_password
+    )
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    
+    return db_user
