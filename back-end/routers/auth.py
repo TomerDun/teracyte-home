@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from controllers.auth import login_user
 from schemas.auth import LoginRequest, LoginResponse
+from services.tc_auth import get_tc_creds, refresh_tc_token
 
 
 # Create auth router
@@ -36,4 +37,14 @@ async def login(
         db=db
     )
     
+    return result
+
+@router.get('/tc-login')
+async def get_tc_login():
+    """
+    TC Login endpoint - Authenticate with TC API and return tokens
+    """
+    
+    result = get_tc_creds()
+
     return result
