@@ -25,3 +25,8 @@ dist-ssr
 
 # security
 .env
+
+# Backend
+.venv/
+__pycache__/
+*.pyc
