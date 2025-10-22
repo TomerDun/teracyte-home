@@ -52,7 +52,7 @@ def login_user(username: str, password: str, db: Session) -> dict:
 
 def update_user_tc_creds(user: User, db: Session):
     """
-    Update user's TC credentials (access and refresh tokens)
+    Check if user has a refresh token and if not fetch a new one.
     
     Args:
         user: User object from database

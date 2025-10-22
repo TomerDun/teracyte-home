@@ -2,29 +2,29 @@ from fastapi import FastAPI, APIRouter, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-# Import database and models
+
 from database import engine, Base, get_db
 from models.user import User
 from schemas.user import UserCreate, UserResponse
 from core.security import get_password_hash
 
-# Import routers
+
 from routers import auth as auth_router
 
-# Create database tables
+
 Base.metadata.create_all(bind=engine)
 
-# Create FastAPI app instance
+
 app = FastAPI(
     title="Teracyte Home API",
     description="Backend API for Teracyte Home application",
     version="1.0.0"
 )
 
-# Create API router with /api prefix
+
 api_router = APIRouter(prefix="/api")
 
-# Configure CORS
+# CORS
 origins = [
     "http://localhost:5173",
 ]
