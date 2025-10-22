@@ -6,7 +6,7 @@ load_dotenv()
 
 def get_tc_creds():
     """"
-    get acces token and refresh token from TC API
+    call login on TC API to get acces token and refresh token from TC API
     """
     print('--Retreiving TC API credentials--')
     url = os.getenv("TC_API_BASE_URL") + "/auth/login"

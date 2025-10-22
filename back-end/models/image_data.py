@@ -14,7 +14,7 @@ class ImageData(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     tc_image_id = Column(String(255), nullable=False, index=True)
-    raw_image_path = Column(String(500), nullable=True)
+    raw_image_path = Column(String(500), nullable=False)
     processed_image_path = Column(String(500), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     histogram_path = Column(String(500), nullable=True)

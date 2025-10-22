@@ -1,5 +1,6 @@
 from fastapi import FastAPI, APIRouter, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
 
@@ -92,3 +93,6 @@ api_router.include_router(image_data_router.router)
 
 # Include the API router in the app
 app.include_router(api_router)
+
+# Mount static files directory to serve images
+app.mount("/static", StaticFiles(directory="static"), name="static")
