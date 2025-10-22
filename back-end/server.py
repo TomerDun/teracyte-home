@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, APIRouter, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
@@ -7,6 +7,9 @@ from database import engine, Base, get_db
 from models.user import User
 from schemas.user import UserCreate, UserResponse
 from core.security import get_password_hash
+
+# Import routers
+from routers import auth as auth_router
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -17,6 +20,9 @@ app = FastAPI(
     description="Backend API for Teracyte Home application",
     version="1.0.0"
 )
+
+# Create API router with /api prefix
+api_router = APIRouter(prefix="/api")
 
 # Configure CORS
 origins = [
@@ -32,14 +38,15 @@ app.add_middleware(
 )
 
 
-@app.get("/")
+@api_router.get("/")
 async def root():    
     return {        
         "status": "running",        
     }
 
+
 # Database test endpoint
-@app.get("/db-test")
+@api_router.get("/db-test")
 async def db_test(db: Session = Depends(get_db)):
     """Test database connection and return user count"""
     try:
@@ -57,7 +64,7 @@ async def db_test(db: Session = Depends(get_db)):
 
 
 # Test endpoint to create a user (for testing only)
-@app.post("/test-create-user", response_model=UserResponse)
+@api_router.post("/test-create-user", response_model=UserResponse)
 async def test_create_user(user_data: UserCreate, db: Session = Depends(get_db)):
     """Test endpoint to create a user (should be replaced with proper auth)"""
     # Check if user exists
@@ -76,3 +83,10 @@ async def test_create_user(user_data: UserCreate, db: Session = Depends(get_db))
     db.refresh(db_user)
     
     return db_user
+
+
+# Include routers
+api_router.include_router(auth_router.router)
+
+# Include the API router in the app
+app.include_router(api_router)

@@ -1,23 +1,26 @@
 """
 Security utilities for password hashing and JWT tokens
 """
-from passlib.context import CryptContext
+import bcrypt
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from typing import Optional
+import os
+from dotenv import load_dotenv
 
-# Password hashing context using bcrypt
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Load environment variables
+load_dotenv()
 
-# JWT Configuration
-SECRET_KEY = "your-secret-key-change-this-in-production"  # TODO: Move to environment variable
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+# JWT Configuration from environment variables
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
     Verify a plain password against a hashed password.
+    Truncates password to 72 bytes for bcrypt compatibility.
     
     Args:
         plain_password: The plain text password
@@ -26,20 +29,33 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     Returns:
         True if password matches, False otherwise
     """
-    return pwd_context.verify(plain_password, hashed_password)
+    # Convert password to bytes and truncate to 72 bytes
+    password_bytes = plain_password.encode('utf-8')[:72]
+    # Convert hash string to bytes
+    hash_bytes = hashed_password.encode('utf-8')
+    
+    return bcrypt.checkpw(password_bytes, hash_bytes)
 
 
 def get_password_hash(password: str) -> str:
     """
     Hash a password using bcrypt.
+    Truncates password to 72 bytes for bcrypt compatibility.
     
     Args:
         password: Plain text password
         
     Returns:
-        Hashed password
+        Hashed password as string
     """
-    return pwd_context.hash(password)
+    # Convert password to bytes and truncate to 72 bytes
+    password_bytes = password.encode('utf-8')[:72]
+    # Generate salt and hash password
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password_bytes, salt)
+    
+    # Return hash as string
+    return hashed.decode('utf-8')
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
