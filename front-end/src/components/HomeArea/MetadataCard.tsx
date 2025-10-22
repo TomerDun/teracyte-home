@@ -27,38 +27,38 @@ export default function MetadataCard({
       {/* Metadata Items */}
       <div className="flex flex-col gap-4 shrink-0">
         {/* Image ID */}
-        <div className="flex gap-3 items-start">
+        <div className="flex gap-3">
           <img src={imgIcon} alt="" className="size-5 shrink-0" />
-          <div className="flex flex-col items-start">
+          <div className="flex flex-col">
             <p className="text-sm text-[#6a7282]">Image ID</p>
             <p className="text-base text-[#101828]">{imageId}</p>
           </div>
         </div>
 
         {/* Intensity Average */}
-        <div className="flex gap-3 items-start">
+        <div className="flex gap-3">
           <img src={imgIcon1} alt="" className="size-5 shrink-0" />
-          <div className="flex flex-col items-start">
+          <div className="flex flex-col">
             <p className="text-sm text-[#6a7282]">Intensity Average</p>
             <p className="text-base text-[#101828]">{intensityAverage}</p>
           </div>
         </div>
 
         {/* Focus Score */}
-        <div className="flex gap-3 items-start">
+        <div className="flex gap-3">
           <img src={imgIcon2} alt="" className="size-5 shrink-0" />
-          <div className="flex flex-col items-start">
+          <div className="flex flex-col">
             <p className="text-sm text-[#6a7282]">Focus Score</p>
             <p className="text-base text-[#101828]">{focusScore}</p>
           </div>
         </div>
 
         {/* Classification */}
-        <div className="flex gap-3 items-start">
+        <div className="flex gap-3">
           <img src={imgIcon3} alt="" className="size-5 shrink-0" />
-          <div className="flex flex-col items-start gap-1">
+          <div className="flex flex-col gap-1">
             <p className="text-sm text-[#6a7282]">Classification</p>
-            <span className="inline-flex items-center justify-center px-2 py-0.5 bg-[#d4183d] text-white text-xs rounded-lg w-fit">
+            <span className="inline-flex justify-center px-2 py-0.5 bg-[#d4183d] text-white text-xs rounded-lg w-fit">
               {classification}
             </span>
           </div>
