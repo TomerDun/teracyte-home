@@ -31,3 +31,4 @@ dist-ssr
 __pycache__/
 *.pyc
 back-end/static/cell_images/*
+back-end/teracyte.db

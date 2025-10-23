@@ -23,12 +23,12 @@ def check_new_images(user: User, db: Session):
     latest_ct_metadata = fetch_image_metadata(user.tc_access_token)        
     if not validate_metadata(latest_ct_metadata):
         return False
-    
-    # print('ct metadata: ', latest_ct_metadata, flush=True)
+        
     latest_db_img = db.query(ImageData).order_by(ImageData.created_at.desc()).first()
-            
-    if latest_ct_metadata['image_id'] == latest_db_img.tc_image_id:
-        return False
+       
+    if latest_db_img is not None:             
+        if  latest_db_img.tc_image_id is not None and (latest_ct_metadata['image_id'] == latest_db_img.tc_image_id):
+            return False
 
     # New image found
     

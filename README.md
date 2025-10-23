@@ -20,19 +20,6 @@ cd teracyte-home
 #### 1. Environment Configuration
 Obtain a valid `.env` file and place it in the `back-end/` directory. Use `.env.example` as a reference and update configurations as needed:
 
-```bash
-cd back-end
-# Create .env file with the following variables:
-# SECRET_KEY - Your secret key for JWT signing
-# ALGORITHM - HS256
-# ACCESS_TOKEN_EXPIRE_MINUTES - Token expiration time
-# DATABASE_URL - sqlite:///./teracyte.db
-# FRONTEND_URL - http://localhost:5173
-# TC_API_BASE_URL - Teracyte API base URL
-# TC_USERNAME - Teracyte API username
-# TC_PASSWORD - Teracyte API password
-```
-
 #### 2. Install Dependencies and Run Server
 ```bash
 python -m venv venv
@@ -80,6 +67,9 @@ npm run dev
 ```
 The front-end application will start on `http://localhost:5173`
 
+*Important note: when first logging in to the dashboard, no data will be shown since no data was fetched yet. wait 30s for the polling to start. on future reloads the data will be fetched from the DB on mount.
+** note about DB setup: no setup neededd, after running the server the first time the DB file will be created automatically.
+
 ## Tech Stack
 
 ### Back-End
@@ -102,7 +92,7 @@ The front-end application will start on `http://localhost:5173`
 
 This project was developed with the assistance of AI-powered tools:
 
-- **GitHub Copilot** - AI pair programming for code generation, completion, and refactoring throughout the development process
+- **GitHub Copilot** - AI Code assistant.
 - **Figma MCP** - Used in conjunction with Copilot for design-to-code workflow
 - **Figma Make** - Initial UI/UX mockups and design prototyping
 
