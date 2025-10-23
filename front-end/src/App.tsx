@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import './App.css'
 import HomePage from './pages/HomePage'
 import { loginUser } from './services/authService'
+import Routing from './Routing'
 
 function App() {  
   useEffect(() => {
@@ -12,7 +13,7 @@ function App() {
   }, [])
   return (
     <>
-      <HomePage />
+      <Routing />
     </>
   )
 }

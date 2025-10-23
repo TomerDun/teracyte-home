@@ -9,7 +9,7 @@ export async function loginUser(username: string, password: string) {
         localStorage.setItem('apiToken', data.access_token);
         localStorage.setItem('username', username);
 
-        return true;
+        return;
     }
     catch (err) {
         return err;
