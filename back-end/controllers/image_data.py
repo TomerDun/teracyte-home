@@ -7,6 +7,7 @@ from models.image_data import ImageData
 from services.tc_image_data import fetch_image_metadata, fetch_image_file
 import base64
 import os
+from validators.image_data_validator import validate_metadata
 
 def check_new_images(user: User, db: Session):
     """
@@ -21,15 +22,24 @@ def check_new_images(user: User, db: Session):
     """
     
     latest_ct_metadata = fetch_image_metadata(user.tc_access_token, user.tc_refresh_token)        
-    print('ct metadata: ', latest_ct_metadata, flush=True)
+    if not validate_metadata(latest_ct_metadata):
+        return False
+    
+    # print('ct metadata: ', latest_ct_metadata, flush=True)
     latest_db_img = db.query(ImageData).order_by(ImageData.created_at.desc()).first()
             
     if latest_ct_metadata['image_id'] == latest_db_img.tc_image_id:
         return False
 
     # New image found
+    
     print('--new image_id found, fetching image file--')
     new_tc_image_data = fetch_image_file(user.tc_access_token)
+    
+    if new_tc_image_data['image_id'] != latest_ct_metadata['image_id']:
+        print('❌ image_id mismatch between metadata and image file response')
+        return False
+    
     new_tc_image_file = new_tc_image_data['image_data_base64']
     # print('new_tc_image: ', new_tc_image_file, flush=True)    
     

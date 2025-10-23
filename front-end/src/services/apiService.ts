@@ -3,7 +3,7 @@ export const SERVER_BASE_URL = 'http://localhost:8000';
 import type { HttpMethod } from '../types/apiTypes';
 
 
-export async function callApi(endpoint: string, method: HttpMethod, body?: any, addAuthHeader: boolean = true) {
+export async function callApi(endpoint: string, method: HttpMethod = 'GET', body?: any, addAuthHeader: boolean = true) {
     const url = API_BASE_URL + endpoint;
     const reqBody = body ? JSON.stringify(body) : null;
     const headers: Record<string, string> = {

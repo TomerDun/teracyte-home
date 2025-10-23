@@ -75,7 +75,11 @@ def fetch_image_file(access_token:str):
             continue
     
         response.raise_for_status() # Raise for unexpected status codes
-        res_data = response.json()
+        try:
+            res_data = response.json()
+        except Exception as e:
+            print(f'❌ Error parsing JSON response: {e}', flush=True)
+            continue
         
         if 'image_data_base64' not in res_data:
             print(f'--retrying becuase of missing data in response--', flush=True)
