@@ -61,9 +61,18 @@ def get_current_user(
         )
     
     print('--checking if user needs TC token refresh--', flush=True)
-    new_token = refresh_token_if_expired(user.tc_access_token, user.tc_refresh_token)
-    if new_token != user.tc_access_token:
-        user.tc_access_token = new_token
+    
+    # refresh_token_if_expired handles the case where expires_at is None
+    token_data = refresh_token_if_expired(
+        user.tc_access_token, 
+        user.tc_refresh_token,
+        user.tc_access_token_expires
+    )
+    
+    # Update token and expiration if they changed
+    if token_data["access_token"] != user.tc_access_token:
+        user.tc_access_token = token_data["access_token"]
+        user.tc_access_token_expires = token_data["expires_at"]
         db.add(user)
         db.commit()
         db.refresh(user)

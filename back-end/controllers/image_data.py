@@ -21,7 +21,7 @@ def check_new_images(user: User, db: Session):
         Response with new images data
     """
     
-    latest_ct_metadata = fetch_image_metadata(user.tc_access_token, user.tc_refresh_token)        
+    latest_ct_metadata = fetch_image_metadata(user.tc_access_token)        
     if not validate_metadata(latest_ct_metadata):
         return False
     

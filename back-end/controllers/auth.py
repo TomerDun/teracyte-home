@@ -67,11 +67,18 @@ def update_user_tc_creds(user: User, db: Session):
         tc_creds = get_tc_creds()
         user.tc_access_token = tc_creds["access_token"]
         user.tc_refresh_token = tc_creds["refresh_token"]
+        user.tc_access_token_expires = tc_creds["expires_at"]
         print('--TC credentials updated--')
-    
-    new_token = refresh_token_if_expired(user.tc_access_token, user.tc_refresh_token)
-    if new_token != user.tc_access_token:
-        user.tc_access_token = new_token
+    else:
+        # User has tokens, check if they need refresh
+        # refresh_token_if_expired handles the case where expires_at is None
+        token_data = refresh_token_if_expired(
+            user.tc_access_token, 
+            user.tc_refresh_token,
+            user.tc_access_token_expires
+        )
+        user.tc_access_token = token_data["access_token"]
+        user.tc_access_token_expires = token_data["expires_at"]
     
     # Commit changes to database
     db.commit()

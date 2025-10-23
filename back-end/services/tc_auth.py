@@ -1,5 +1,6 @@
 import os
 import httpx
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from core.jwt_utils import verify_token_format
 
@@ -33,11 +34,22 @@ def get_tc_creds():
         data = response.json()
         
         tokens_valid = verify_token_format(data.get("access_token")) and verify_token_format(data.get("refresh_token"))
-        if (tokens_valid):        
+        if (tokens_valid):
+            # Calculate expiration time from expires_in (seconds)
+            expires_in = data.get("expires_in", 60)  # Default to 60 seconds if not provided
+            expires_at = datetime.utcnow() + timedelta(seconds=expires_in)
+            
             return {
                 "access_token": data.get("access_token"),
-                "refresh_token": data.get("refresh_token")
+                "refresh_token": data.get("refresh_token"),
+                "expires_at": expires_at
             }
+        else:
+            print(f'--Token format verification failed, retrying--', flush=True)
+    
+    # If we exit the loop without returning, raise an error
+    raise Exception("Failed to get TC credentials after 3 attempts - token format verification failed")
+
 
 def refresh_tc_token(refresh_token: str):
     """"
@@ -66,10 +78,21 @@ def refresh_tc_token(refresh_token: str):
         data = response.json()
         
         access_token = data.get("access_token")
+        
+        # Only verify access_token (we don't use the new refresh_token)
         token_valid = verify_token_format(access_token)
         
-        if (token_valid):        
+        if (token_valid):
+            # Calculate expiration time from expires_in (seconds)
+            expires_in = data.get("expires_in", 60)  # Default to 60 seconds if not provided
+            expires_at = datetime.utcnow() + timedelta(seconds=expires_in)
+            
             return {
-                "access_token": data.get("access_token"),
-                "refresh_token": data.get("refresh_token")
+                "access_token": access_token,
+                "expires_at": expires_at
             }
+        else:
+            print(f'--Token format verification failed, retrying--', flush=True)
+    
+    # If we exit the loop without returning, raise an error
+    raise Exception("Failed to refresh token after 3 attempts - token format verification failed")

@@ -17,6 +17,7 @@ class User(Base):
     hashed_password = Column(String(255), nullable=False)
     tc_access_token = Column(String(500), nullable=True)
     tc_refresh_token = Column(String(500), nullable=True)
+    tc_access_token_expires = Column(DateTime, nullable=True)
 
     def __repr__(self):
         return f"<User(id={self.id}, username='{self.username}')>"

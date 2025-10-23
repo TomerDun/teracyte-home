@@ -1,11 +1,10 @@
 import os
 from dotenv import load_dotenv
 import httpx
-from services.tc_auth import refresh_tc_token
 
 load_dotenv()
 
-def fetch_image_metadata(access_token, refresh_token):        
+def fetch_image_metadata(access_token):        
     
     """
     Fetch latest image processing results from TC API.
@@ -19,18 +18,7 @@ def fetch_image_metadata(access_token, refresh_token):
     
     url = os.getenv('TC_API_BASE_URL') + '/results'    
     
-    
     response = httpx.get(
-        url,
-        headers={
-            "Authorization": f"Bearer {access_token}"
-        },        
-    )
-    
-    if (response.status_code == 401):
-        new_token = refresh_tc_token(refresh_token)
-        access_token = new_token['access_token']
-        response = httpx.get(
         url,
         headers={
             "Authorization": f"Bearer {access_token}"
@@ -38,9 +26,6 @@ def fetch_image_metadata(access_token, refresh_token):
     )
         
     response.raise_for_status()                
-    
-        
-    #TODO: Error handling
         
     return response.json()
 
