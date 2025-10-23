@@ -1,7 +1,7 @@
 """
 ImageData SQLAlchemy model
 """
-from sqlalchemy import Column, Integer, String, Float, DateTime
+from sqlalchemy import Column, Integer, String, Float, DateTime, JSON
 from sqlalchemy.sql import func
 from database import Base
 
@@ -17,7 +17,7 @@ class ImageData(Base):
     raw_image_path = Column(String(500), nullable=False)
     processed_image_path = Column(String(500), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    histogram_path = Column(String(500), nullable=True)
+    histogram = Column(JSON, nullable=True)
     intensity_average = Column(Float, nullable=True)
     focus_score = Column(Float, nullable=True)
     classification_label = Column(String(255), nullable=True)

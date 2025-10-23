@@ -65,7 +65,8 @@ def check_new_images(user: User, db: Session):
         raw_image_path=relative_path,
         intensity_average=latest_ct_metadata['intensity_average'],
         focus_score=latest_ct_metadata['focus_score'],
-        classification_label=latest_ct_metadata['classification_label']
+        classification_label=latest_ct_metadata['classification_label'],
+        histogram=latest_ct_metadata.get('histogram'),
     )
     
     db.add(new_image_data)
