@@ -91,3 +91,29 @@ def get_latest_image_data(db: Session):
         Latest ImageData object or None if no data exists
     """
     return db.query(ImageData).order_by(ImageData.created_at.desc()).first()
+
+
+def get_image_data_history(db: Session):
+    """
+    Retrieve image data history with selected fields only.
+    
+    Args:
+        db: Database session
+    Returns:
+        List of dictionaries containing tc_image_id, classification_label, and created_at
+        sorted by created_at from newest to oldest
+    """
+    results = db.query(
+        ImageData.tc_image_id,
+        ImageData.classification_label,
+        ImageData.created_at
+    ).order_by(ImageData.created_at.desc()).all()
+    
+    return [
+        {
+            "tc_image_id": result.tc_image_id,
+            "classification_label": result.classification_label,
+            "created_at": result.created_at
+        }
+        for result in results
+    ]
