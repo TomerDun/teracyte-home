@@ -86,18 +86,6 @@ async def test_create_user(user_data: UserCreate, db: Session = Depends(get_db))
     
     return db_user
 
-# Testing
-@api_router.post('/test-token')
-async def test_token(req: Request):
-    from services.token_manager import refresh_token_if_expired
-    
-    body = await req.json()
-    new_token = refresh_token_if_expired(body.get('access_token'), body.get('refresh_token'))
-    
-    return {        
-        "message": "working"
-    }
-
 
 # Include routers
 api_router.include_router(auth_router.router)
