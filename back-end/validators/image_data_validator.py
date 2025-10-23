@@ -17,7 +17,7 @@ def validate_metadata(metadata):
         print('❌ metadata validation error: missing image_id')
         return False
     if not metadata.get('intensity_average' or float(metadata.get('intensity_average')) < 0):
-        print('❌ metadata validation error: invalido rmissing intensity_average')
+        print('❌ metadata validation error: invalid or missing intensity_average')
         return False
     if not metadata.get('focus_score'):
         print('❌ metadata validation error: missing focus_score')

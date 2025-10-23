@@ -5,8 +5,7 @@ from sqlalchemy.orm import Session
 from models.user import User
 from models.image_data import ImageData
 from services.tc_image_data import fetch_image_metadata, fetch_image_file
-import base64
-import os
+from services.image_storage import decode_base64_image, save_image_file
 from validators.image_data_validator import validate_metadata, validate_image_file
 
 def check_new_images(user: User, db: Session):
@@ -42,26 +41,13 @@ def check_new_images(user: User, db: Session):
     
     new_tc_image_file = new_tc_image_data['image_data_base64']
     
-    # Write image bytes to file    
-    
-    image_bytes = base64.b64decode(new_tc_image_file)        
+    # Decode and validate image
+    image_bytes = decode_base64_image(new_tc_image_file)
     if not validate_image_file(image_bytes):
         return False
     
-    # Save image to filesystem    
-    filename = f"{latest_ct_metadata['image_id']}.png"    
-    static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "cell_images", "raw")    
-    os.makedirs(static_dir, exist_ok=True) # Ensure directory exists
-    file_path = os.path.join(static_dir, filename)
-    
-    relative_path = f"/static/cell_images/raw/{filename}" 
-    
-    
-    
-    with open(file_path, "wb") as f:
-        f.write(image_bytes)
-    
-    print(f'--Image saved to: {file_path}--')
+    # Save image to filesystem
+    relative_path = save_image_file(image_bytes, latest_ct_metadata['image_id'])
     
     # Store new image data in database
     new_image_data = ImageData(
