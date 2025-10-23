@@ -1,6 +1,7 @@
 import os
 import httpx
 from dotenv import load_dotenv
+from core.jwt_utils import verify_token_format
 
 load_dotenv()
 
@@ -8,29 +9,35 @@ def get_tc_creds():
     """"
     call login on TC API to get acces token and refresh token from TC API
     """
-    print('--Retreiving TC API credentials--')
     url = os.getenv("TC_API_BASE_URL") + "/auth/login"
     username = os.getenv("TC_USERNAME")
     password = os.getenv("TC_PASSWORD")
     
-    # Make POST request to get tokens
-    response = httpx.post(
-        url,
-        json={
-            "username": username,
-            "password": password
-        }
-    )
+    tokens_valid = False
+    retries = 0
     
-    # Raise exception if request failed
-    response.raise_for_status()
+    while not tokens_valid and retries < 3:        
+        retries += 1
+        print(f'--Retreiving TC API credentials (try: {retries})--')
         
-    data = response.json()
-    
-    return {
-        "access_token": data.get("access_token"),
-        "refresh_token": data.get("refresh_token")
-    }
+        response = httpx.post(
+            url,
+            json={
+                "username": username,
+                "password": password
+            }
+        )
+        
+        
+        response.raise_for_status()        
+        data = response.json()
+        
+        tokens_valid = verify_token_format(data.get("access_token")) and verify_token_format(data.get("refresh_token"))
+        if (tokens_valid):        
+            return {
+                "access_token": data.get("access_token"),
+                "refresh_token": data.get("refresh_token")
+            }
 
 def refresh_tc_token(refresh_token: str):
     """"
@@ -39,22 +46,30 @@ def refresh_tc_token(refresh_token: str):
     
     url = os.getenv("TC_API_BASE_URL") + "/auth/refresh"
     
-    print('--Refreshing TC API access token--')
+    retries = 0
+    token_valid = False
     
-    # Make POST request to refresh token
-    response = httpx.post(
-        url,
-        json={
-            "refresh_token": refresh_token
-        }
-    )
-    
-    # Raise exception if request failed
-    response.raise_for_status()
+    while not token_valid and retries < 3:
+        retries += 1
+        print(f'--Refreshing TC API access token (try: {retries})--')
+            
+        response = httpx.post(
+            url,
+            json={"refresh_token": refresh_token}
+        )
         
-    data = response.json()
-    
-    return {
-        "access_token": data.get("access_token"),
-        "refresh_token": data.get("refresh_token")
-    }
+        if response.status_code == 503:    
+            print('--TC API service unavailable, retrying--', flush=True)
+            continue
+        
+        response.raise_for_status() #Raise error for unexpected status codes     
+        data = response.json()
+        
+        access_token = data.get("access_token")
+        token_valid = verify_token_format(access_token)
+        
+        if (token_valid):        
+            return {
+                "access_token": data.get("access_token"),
+                "refresh_token": data.get("refresh_token")
+            }

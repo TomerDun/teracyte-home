@@ -64,6 +64,6 @@ def update_user_tc_creds(user: User, db: Session):
     if not user.tc_refresh_token:        
         print(f'--No TC refresh token found for user {user.username}, fetching new credentials--')
         tc_creds = get_tc_creds()
-        user.tc_acc_token = tc_creds["access_token"]
+        user.tc_access_token = tc_creds["access_token"]
         user.tc_refresh_token = tc_creds["refresh_token"]
         print('--TC credentials updated--')

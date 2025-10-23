@@ -1,4 +1,5 @@
 from jose import jwt, JWTError
+from services.tc_auth import refresh_tc_token
 
 
 def refresh_token_if_expired(access_token: str, refresh_token: str):
@@ -11,38 +12,40 @@ def refresh_token_if_expired(access_token: str, refresh_token: str):
     Returns:
         New access token if refreshed, else the original access token
     """
-
-def verify_token_format(token: str) -> bool:
-    print(token, flush=True)
-    """
-    Verify if the token matches the expected JWT schema structure.    
     
-    Args:
-        token: Token string to verify
-    Returns:
-        True if token matches JWT schema, False otherwise
-    """
-    try:
+    try:        
         payload = jwt.decode(
-            token=token,
-            key="",  # Dummy key (not used when verify_signature is False)
+            token=access_token,
+            key=None, 
             options={
-                "verify_signature": False,
-                "verify_exp": False,  # Don't verify expiration
+                "verify_signature": False,  
+                "verify_exp": True,  
             }
-        )           
-        if not isinstance(payload, dict) or 'sub' not in payload:
-            
-            return False                
+        )
         
-        return True
-     
-     
+        # Token is valid and not expired - return original
+        print('--✅ Access token is valid--', flush=True)
+        return access_token
+        
+    except jwt.ExpiredSignatureError:
+        # Token is expired - refresh it
+        print('--❎ Access token expired, refreshing--', flush=True)
+        
+        try:
+            tc_creds = refresh_tc_token(refresh_token)
+            new_access_token = tc_creds["access_token"]
+            print('--Successfully refreshed access token--', flush=True)
+            return new_access_token
+            
+        except Exception as e:
+            print(f'--Error refreshing token: {e}--', flush=True)
+            raise
+            
     except JWTError as e:
-        print('JWTError: ', e, flush=True)
-        print('JWTError encountered during token schema verification', flush=True)
-        return False
-    except Exception as e:        
-        print('Exception: ', e, flush=True)
-        print('General Exception encountered during token schema verification', flush=True)
-        return False
+        # Invalid token format
+        print(f'--Invalid token format: {e}--', flush=True)
+        raise
+        
+    except Exception as e:
+        print(f'--Unexpected error checking token expiry: {e}--', flush=True)
+        raise

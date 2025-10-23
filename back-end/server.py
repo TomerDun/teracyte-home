@@ -88,17 +88,14 @@ async def test_create_user(user_data: UserCreate, db: Session = Depends(get_db))
 
 # Testing
 @api_router.post('/test-token')
-async def test_token_format(req: Request):
-    """
-    Test endpoint to verify token format
-    """
-    from services.token_manager import verify_token_format
-    body = await req.json()
+async def test_token(req: Request):
+    from services.token_manager import refresh_token_if_expired
     
-    is_valid_format = verify_token_format(body.get('token'))
+    body = await req.json()
+    new_token = refresh_token_if_expired(body.get('access_token'), body.get('refresh_token'))
     
     return {        
-        "is_valid_format": is_valid_format
+        "message": "working"
     }
 
 

@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from core.security import decode_access_token
 from models.user import User
+from services.token_manager import refresh_token_if_expired
 
 # HTTP Bearer token scheme
 security = HTTPBearer()
@@ -15,6 +16,7 @@ def get_current_user(
 ) -> User:
     """
     Dependency to get current authenticated user from JWT token.
+    this will also refresh the user's TC access_token if needed
     
     Args:
         credentials: HTTP Bearer token credentials
@@ -56,5 +58,14 @@ def get_current_user(
             detail="User not found",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    
+    print('--checking if user needs TC token refresh--', flush=True)
+    new_token = refresh_token_if_expired(user.tc_access_token, user.tc_refresh_token)
+    if new_token != user.tc_access_token:
+        user.tc_access_token = new_token
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    
     
     return user

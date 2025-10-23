@@ -26,7 +26,7 @@ class UserInDB(UserBase):
     """Schema for user in database (includes hashed password and tokens)"""
     id: int
     hashed_password: str
-    tc_acc_token: Optional[str] = None
+    tc_access_token: Optional[str] = None
     tc_refresh_token: Optional[str] = None
     
     model_config = ConfigDict(from_attributes=True)
