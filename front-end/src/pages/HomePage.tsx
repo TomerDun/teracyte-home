@@ -1,12 +1,15 @@
 import MetadataCard from "../components/HomeArea/MetadataCard";
 import ImageDisplayCard from "../components/HomeArea/ImageDisplayCard";
+import Histogram from "../components/HomeArea/Histogram";
 import { useEffect, useState } from "react";
 import type { ImageMetadata } from "../types/imageDataTypes";
 import { fetchLatestImageData, fetchNewImageData } from "../services/imageDataService";
+import LoadingSpinner from "../components/misc/LoadingSpinner";
 
 export default function HomePage() {
     const [imageMetadata, setImageMetadata] = useState<ImageMetadata | null>(null);
     const [imageFilePath, setImageFilePath] = useState<string | null>(null);
+    const [histogramData, setHistogramData] = useState<number[] | null>(null);
 
     useEffect(() => {
         if (localStorage.getItem("apiToken")) {
@@ -44,6 +47,7 @@ export default function HomePage() {
             }
             const newImagePath = res.raw_image_path;
 
+            setHistogramData(res.histogram)
             setImageMetadata(newMetadata);
             setImageFilePath(newImagePath);
         }
@@ -64,12 +68,13 @@ export default function HomePage() {
         }
         const newImagePath = res.raw_image_path;
 
+        setHistogramData(res.histogram)
         setImageMetadata(newMetadata);
         setImageFilePath(newImagePath);
     }
     return (
         <div id="home-page-container" className="h-full">
-            <div id="header-container">
+            <div id="header-container" className="">
                 Image Analytics Dashboard
             </div>
             <div id="main-container" className="flex gap-4 h-full">
@@ -80,8 +85,8 @@ export default function HomePage() {
                 <div id="display-container" className="h-full w-[50%]">
                     <ImageDisplayCard imageFilePath={imageFilePath} />
                 </div>
-                <div id="charts-container" className="h-full w-[20%]">
-                    <div className="bg-white border border-gray-200 rounded-md">Charts</div>
+                <div id="charts-container" className="h-full w-[30%]">
+                    {histogramData ? <Histogram histogram={histogramData} /> : <LoadingSpinner size={12}/>}
                 </div>
             </div>
         </div>

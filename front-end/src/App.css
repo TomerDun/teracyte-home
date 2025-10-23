@@ -1,8 +1,8 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  /* TODO: FIX height later */
-  height: 100svh;  
+  margin: 0;
+  padding: 3rem 2rem;
+  height: 100svh;
+  overflow: hidden;
 }
 
 body {
