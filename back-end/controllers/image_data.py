@@ -117,3 +117,17 @@ def get_image_data_history(db: Session):
         }
         for result in results
     ]
+
+
+def get_image_data_by_id(image_id: str, db: Session):
+    """
+    Retrieve image data by tc_image_id.
+    
+    Args:
+        image_id: The tc_image_id to search for
+        db: Database session
+        
+    Returns:
+        ImageData object or None if not found
+    """
+    return db.query(ImageData).filter(ImageData.tc_image_id == image_id).first()

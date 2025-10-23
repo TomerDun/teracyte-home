@@ -71,3 +71,26 @@ async def get_history(
     """
     res = image_data_controller.get_image_data_history(db=db)
     return res
+
+
+@router.get('/{image_id}')
+async def get_image_by_id(
+    image_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Get image data by tc_image_id.
+    
+    Requires authentication via JWT token in Authorization header.
+    
+    Args:
+        image_id: The tc_image_id from URL parameter
+        current_user: Authenticated user (from JWT token)
+        db: Database session
+        
+    Returns:
+        ImageData object or None if not found
+    """
+    res = image_data_controller.get_image_data_by_id(image_id=image_id, db=db)
+    return res
