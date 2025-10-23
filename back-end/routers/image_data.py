@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from database import get_db
 from core.dependencies import get_current_user
 from models.user import User
-from controllers.image_data import check_new_images
+import controllers.image_data as image_data_controller
 
 
 # Create image_data router
@@ -32,6 +32,20 @@ async def check_new(
     Returns:
         New images data
     """
-    result = check_new_images(user=current_user, db=db)
+    res = image_data_controller.check_new_images(user=current_user, db=db)
     
-    return result
+    return res
+
+@router.get('/latest')
+async def get_latest_image(current_user: User = Depends(get_current_user),
+                           db: Session = Depends(get_db)):
+    """
+    Get the latest image data.
+    
+    Args:
+        current_user: Authenticated user (from JWT token)
+        db: Database session
+    """
+    
+    res = image_data_controller.get_latest_image_data(db=db)
+    return res

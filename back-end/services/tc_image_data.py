@@ -45,6 +45,7 @@ def fetch_image_metadata(access_token, refresh_token):
     return response.json()
 
 def fetch_image_file(access_token:str):
+    # TODO: Add retries to make sure image_data_base64 is in the response
     """
     Fetch image file from TC API.
     
@@ -53,16 +54,35 @@ def fetch_image_file(access_token:str):
         image_id: ID of the image to fetch
     """
     
-    url = os.getenv('TC_API_BASE_URL') + '/image/file'
+    url = os.getenv('TC_API_BASE_URL') + '/image'    
     
-    print('Fetching image file from TC API', flush=True)
+    response_valid = False
+    retries = 0
+    
+    while not response_valid and retries < 3:
+        retries += 1
+        print(f'--Fetch image file from CT API (attempt {retries})--', flush=True)
         
-    response = httpx.get(
-        url,
-        headers={
-            "Authorization": f"Bearer {access_token}"
-        }
-    )
+        response = httpx.get(
+            url,
+            headers={
+                "Authorization": f"Bearer {access_token}"
+            }
+        )
+        
+        if (response.status_code > 500):
+            print(f'--retrying on status code {response.status_code}--', flush=True)
+            continue
     
-    # TODO: Error handling
-    return response.json()
+        response.raise_for_status() # Raise for unexpected status codes
+        res_data = response.json()
+        
+        if 'image_data_base64' not in res_data:
+            print(f'--retrying becuase of missing data in response--', flush=True)
+            continue
+        
+        # TODO: Remove this flag if not needed
+        response_valid = True
+        
+        if response_valid:    
+            return res_data

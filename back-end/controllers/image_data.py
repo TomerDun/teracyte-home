@@ -29,9 +29,9 @@ def check_new_images(user: User, db: Session):
 
     # New image found
     print('--new image_id found, fetching image file--')
-    new_tc_image_file = fetch_image_file(user.tc_access_token)
-    print('new_tc_image: ', new_tc_image_file, flush=True)
-    # TODO: Error handling
+    new_tc_image_data = fetch_image_file(user.tc_access_token)
+    new_tc_image_file = new_tc_image_data['image_data_base64']
+    # print('new_tc_image: ', new_tc_image_file, flush=True)    
     
     # Save image to filesystem    
     filename = f"{latest_ct_metadata['image_id']}.png"    
@@ -51,11 +51,11 @@ def check_new_images(user: User, db: Session):
     
     # Store new image data in database
     new_image_data = ImageData(
-        tc_image_id=latest_ct_metadata.image_id,
+        tc_image_id=latest_ct_metadata['image_id'],
         raw_image_path=relative_path,
-        intensity_average=latest_ct_metadata.intensity_average,
-        focus_score=latest_ct_metadata.focus_score,
-        classification_label=latest_ct_metadata.classification_label
+        intensity_average=latest_ct_metadata['intensity_average'],
+        focus_score=latest_ct_metadata['focus_score'],
+        classification_label=latest_ct_metadata['classification_label']
     )
     
     db.add(new_image_data)
@@ -68,3 +68,15 @@ def check_new_images(user: User, db: Session):
         "status": "success",        
         "image": new_image_data
     }
+
+
+def get_latest_image_data(db: Session):
+    """
+    Retrieve the latest image data from the database.
+    
+    Args:
+        db: Database session
+    Returns:
+        Latest ImageData object or None if no data exists
+    """
+    return db.query(ImageData).order_by(ImageData.created_at.desc()).first()
