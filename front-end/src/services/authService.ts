@@ -11,7 +11,8 @@ export async function loginUser(username: string, password: string) {
 
         return;
     }
-    catch (err) {
-        return err;
+    catch (err:any) {
+        const message = err.message.detail || 'Login failed';
+        return new Error(message);
     }
 }
