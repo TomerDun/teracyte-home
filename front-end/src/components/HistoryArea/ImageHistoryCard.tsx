@@ -1,6 +1,11 @@
+import type { ImageHistoryItemType } from "../../types/imageDataTypes";
 import ImageHistoryItem from "./ImageHistoryItem";
 
-export default function ImageHistoryCard() {
+type props = {
+    imageHistory: ImageHistoryItemType[]
+}
+
+export default function ImageHistoryCard({imageHistory}: props) {
     return (
         <div id="history-card" className="bg-white py-6 px-4 rounded-xl shadow-md h-full w-full">
             <div id="title-row" className="mb-12">
@@ -8,12 +13,10 @@ export default function ImageHistoryCard() {
             </div>
 
             <div id="history-list-container" className="flex flex-col pr-4 pb-7 max-h-[70%] gap-5 overflow-y-scroll">
-                <ImageHistoryItem createdAt={'12121212'} imageId="1234"/>
-                <ImageHistoryItem createdAt={'12121212'} imageId="1234"/>
-                <ImageHistoryItem createdAt={'12121212'} imageId="1234"/>
-                <ImageHistoryItem createdAt={'12121212'} imageId="1234"/>
-                <ImageHistoryItem createdAt={'12121212'} imageId="1234"/>
-                <ImageHistoryItem createdAt={'12121212'} imageId="1234"/>
+                
+                { imageHistory.length ?
+                 imageHistory.map((item, index) => <ImageHistoryItem key={index} classification={item.classification_label || ''} imageId={item.tc_image_id} createdAt={item.created_at} />) 
+                 : <p className="text-gray-500">No image history available.</p> }
             </div>
         </div>
     )

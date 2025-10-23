@@ -17,3 +17,9 @@ export type ImageMetadata = {
     classification_label: string;
     focus_score: number;
 }
+
+export type ImageHistoryItemType = {
+    tc_image_id: string;
+    created_at: string;
+    classification_label?: string;
+}
