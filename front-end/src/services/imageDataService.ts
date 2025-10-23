@@ -16,3 +16,8 @@ export async function fetchImageHistory() {
     const res = await callApi("/images/history", "GET")
     return res;
 }
+
+export async function fetchImageById(imageId: string) {
+    const res = await callApi(`/images/${imageId}`, "GET")
+    return res;
+}

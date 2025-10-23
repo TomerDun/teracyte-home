@@ -3,9 +3,9 @@ import ImageDisplayCard from "../components/HomeArea/ImageDisplayCard";
 import Histogram from "../components/HomeArea/Histogram";
 import { useEffect, useState } from "react";
 import type { ImageHistoryItemType, ImageMetadata } from "../types/imageDataTypes";
-import { fetchImageHistory, fetchLatestImageData, fetchNewImageData } from "../services/imageDataService";
+import { fetchImageById, fetchImageHistory, fetchLatestImageData, fetchNewImageData } from "../services/imageDataService";
 import LoadingSpinner from "../components/misc/LoadingSpinner";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import ImageHistoryCard from "../components/HistoryArea/ImageHistoryCard";
 
 export default function HomePage() {
@@ -15,12 +15,14 @@ export default function HomePage() {
     const [imageHistory, setImageHistory] = useState<ImageHistoryItemType[]>([]);
 
     const navigate = useNavigate();
+    const { selectedImageId } = useParams();    
+    
 
     useEffect(() => {
         getImageData();
         getImageHistory();
 
-    }, [])
+    }, [selectedImageId])
 
     useEffect(() => {
         const pollingInterval = 30000;
@@ -72,7 +74,13 @@ export default function HomePage() {
 
     async function getImageData() {
         try {
-            const res = await fetchLatestImageData();
+            let res:any;
+            if (selectedImageId) {
+                res = await fetchImageById(selectedImageId);
+            }
+            else {
+                res = await fetchLatestImageData();
+            }
             const newMetadata: ImageMetadata = {
                 tc_image_id: res.tc_image_id,
                 created_at: res.created_at,
@@ -103,7 +111,7 @@ export default function HomePage() {
                 navigate("/login");
             }
         }
-    }
+    }    
 
 
     return (
@@ -124,7 +132,7 @@ export default function HomePage() {
                 </div>
 
                 <div id="history-container" className="w-[20%]">
-                    <ImageHistoryCard imageHistory={imageHistory} />
+                    <ImageHistoryCard selectedImageId={selectedImageId} imageHistory={imageHistory} />
                 </div>
             </div>
         </div>
