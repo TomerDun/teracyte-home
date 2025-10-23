@@ -8,9 +8,12 @@ export async function callApi(endpoint: string, method: HttpMethod, body?: any, 
     const headers: Record<string, string> = {
         'Content-Type': 'application/json',
     };
-    // if (addAuthHeader) {
-    //     //TODO: Add auth headers
-    // }
+    if (addAuthHeader) {
+        const token = localStorage.getItem('apiToken');
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+    }
 
     const res = await fetch(url, {
         method,

@@ -1,8 +1,7 @@
-// Icon URLs from Figma design
-const imgIcon = "http://localhost:3845/assets/46ebdc5033665f50f6e8621141b693ec36e67e2a.svg";
-const imgIcon1 = "http://localhost:3845/assets/e0eaba9f31658f5bda879da9bdcc1349ce427a8a.svg";
-const imgIcon2 = "http://localhost:3845/assets/732414e927d4a4367d3c280d887482ffebd5530a.svg";
-const imgIcon3 = "http://localhost:3845/assets/46b008d0976e22b01f33cb9b50138ee65ea4292f.svg";
+import imageIcon from '../../assets/icons/image-icon.svg';
+import intensityIcon from '../../assets/icons/intensity-icon.svg';
+import focusIcon from '../../assets/icons/focus-icon.svg';
+import tagIcon from '../../assets/icons/tag-icon.svg';
 
 interface MetadataCardProps {
   imageId?: string;
@@ -28,7 +27,7 @@ export default function MetadataCard({
       <div className="flex flex-col gap-4 shrink-0">
         {/* Image ID */}
         <div className="flex gap-3">
-          <img src={imgIcon} alt="" className="size-5 shrink-0" />
+          <img src={imageIcon} alt="" className="size-5 shrink-0" />
           <div className="flex flex-col">
             <p className="text-sm text-[#6a7282]">Image ID</p>
             <p className="text-base text-[#101828]">{imageId}</p>
@@ -37,7 +36,7 @@ export default function MetadataCard({
 
         {/* Intensity Average */}
         <div className="flex gap-3">
-          <img src={imgIcon1} alt="" className="size-5 shrink-0" />
+          <img src={intensityIcon} alt="" className="size-5 shrink-0" />
           <div className="flex flex-col">
             <p className="text-sm text-[#6a7282]">Intensity Average</p>
             <p className="text-base text-[#101828]">{intensityAverage}</p>
@@ -46,7 +45,7 @@ export default function MetadataCard({
 
         {/* Focus Score */}
         <div className="flex gap-3">
-          <img src={imgIcon2} alt="" className="size-5 shrink-0" />
+          <img src={focusIcon} alt="" className="size-5 shrink-0" />
           <div className="flex flex-col">
             <p className="text-sm text-[#6a7282]">Focus Score</p>
             <p className="text-base text-[#101828]">{focusScore}</p>
@@ -55,7 +54,7 @@ export default function MetadataCard({
 
         {/* Classification */}
         <div className="flex gap-3">
-          <img src={imgIcon3} alt="" className="size-5 shrink-0" />
+          <img src={tagIcon} alt="" className="size-5 shrink-0" />
           <div className="flex flex-col gap-1">
             <p className="text-sm text-[#6a7282]">Classification</p>
             <span className="inline-flex justify-center px-2 py-0.5 bg-[#d4183d] text-white text-xs rounded-lg w-fit">
