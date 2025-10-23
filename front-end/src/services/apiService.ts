@@ -26,6 +26,7 @@ export async function callApi(endpoint: string, method: HttpMethod = 'GET', body
     if (!res.ok) {
         const err = new Error('Api Call Erorr')
         err.message = await res.json();
+        err.cause = res.status
         throw err;
     }
 
