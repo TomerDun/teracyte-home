@@ -9,7 +9,7 @@ export default function Histogram({ histogram }: HistogramProps) {
     const data = transformHistogramData(histogram);
 
     return (
-        <div className="bg-white border border-gray-200 rounded-md w-full h-full p-4">
+        <div className="w-full h-full p-4">
             <h3 className="text-base font-medium mb-2">Intensity Histogram</h3>
             <ResponsiveContainer width="100%" height="90%">
                 <BarChart data={data}>

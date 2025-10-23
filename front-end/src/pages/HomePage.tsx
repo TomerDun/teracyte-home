@@ -6,6 +6,7 @@ import type { ImageMetadata } from "../types/imageDataTypes";
 import { fetchLatestImageData, fetchNewImageData } from "../services/imageDataService";
 import LoadingSpinner from "../components/misc/LoadingSpinner";
 import { useNavigate } from "react-router";
+import ImageHistoryCard from "../components/HistoryArea/ImageHistoryCard";
 
 export default function HomePage() {
     const [imageMetadata, setImageMetadata] = useState<ImageMetadata | null>(null);
@@ -103,6 +104,10 @@ export default function HomePage() {
                 </div>
                 <div id="charts-container" className="h-full w-[35%] bg-white rounded-xl border border-gray-200">
                     {histogramData ? <Histogram histogram={histogramData} /> : <div className="h-full flex justify-center items-center"><LoadingSpinner size={12} /></div>}
+                </div>
+
+                <div id="history-container" className="w-[20%]">
+                    <ImageHistoryCard />
                 </div>
             </div>
         </div>
