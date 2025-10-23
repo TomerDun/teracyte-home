@@ -2,20 +2,13 @@ import imageIcon from '../../assets/icons/image-icon.svg';
 import intensityIcon from '../../assets/icons/intensity-icon.svg';
 import focusIcon from '../../assets/icons/focus-icon.svg';
 import tagIcon from '../../assets/icons/tag-icon.svg';
+import type { ImageMetadata } from '../../types/imageDataTypes';
 
-interface MetadataCardProps {
-  imageId?: string;
-  intensityAverage?: number;
-  focusScore?: number;
-  classification?: string;
+type MetadataCardProps = {
+  metadata: ImageMetadata | null,
 }
 
-export default function MetadataCard({
-  imageId = "img_20251022_080256",
-  intensityAverage = 93.38,
-  focusScore = 0.73,
-  classification = "Anomaly"
-}: MetadataCardProps = {}) {
+export default function MetadataCard({ metadata }: MetadataCardProps) {
   return (
     <div className="bg-white border border-gray-200 rounded-xl h-full w-full flex flex-col gap-12 p-6">
       {/* Header */}
@@ -30,7 +23,7 @@ export default function MetadataCard({
           <img src={imageIcon} alt="" className="size-5 shrink-0" />
           <div className="flex flex-col">
             <p className="text-sm text-[#6a7282]">Image ID</p>
-            <p className="text-base text-[#101828]">{imageId}</p>
+            <p className="text-base text-[#101828]">{metadata ? metadata.tc_image_id : '...'}</p>
           </div>
         </div>
 
@@ -39,7 +32,7 @@ export default function MetadataCard({
           <img src={intensityIcon} alt="" className="size-5 shrink-0" />
           <div className="flex flex-col">
             <p className="text-sm text-[#6a7282]">Intensity Average</p>
-            <p className="text-base text-[#101828]">{intensityAverage}</p>
+            <p className="text-base text-[#101828]">{metadata ? metadata.intensity_average : '...'}</p>
           </div>
         </div>
 
@@ -48,7 +41,7 @@ export default function MetadataCard({
           <img src={focusIcon} alt="" className="size-5 shrink-0" />
           <div className="flex flex-col">
             <p className="text-sm text-[#6a7282]">Focus Score</p>
-            <p className="text-base text-[#101828]">{focusScore}</p>
+            <p className="text-base text-[#101828]">{metadata ? metadata.focus_score : '...'}</p>
           </div>
         </div>
 
@@ -58,7 +51,7 @@ export default function MetadataCard({
           <div className="flex flex-col gap-1">
             <p className="text-sm text-[#6a7282]">Classification</p>
             <span className="inline-flex justify-center px-2 py-0.5 bg-[#d4183d] text-white text-xs rounded-lg w-fit">
-              {classification}
+              {metadata ? metadata.classification_label : '...'}
             </span>
           </div>
         </div>
