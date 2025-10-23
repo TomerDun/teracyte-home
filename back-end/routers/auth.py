@@ -35,16 +35,6 @@ async def login(
         username=credentials.username,
         password=credentials.password,
         db=db
-    )
+    )            
     
-    return result
-
-@router.get('/tc-login')
-async def get_tc_login():
-    """
-    TC Login endpoint - Authenticate with TC API and return tokens
-    """
-    
-    result = get_tc_creds()
-
     return result

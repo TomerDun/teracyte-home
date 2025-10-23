@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from models.user import User
 from core.security import verify_password, create_access_token, decode_access_token
+from services.token_manager import refresh_token_if_expired
 from services.tc_auth import get_tc_creds, refresh_tc_token
 
 
@@ -61,9 +62,17 @@ def update_user_tc_creds(user: User, db: Session):
     
     print('--checking TC API credentials for user', user.username)
         
-    if not user.tc_refresh_token:        
+    if not user.tc_refresh_token or not user.tc_access_token:        
         print(f'--No TC refresh token found for user {user.username}, fetching new credentials--')
         tc_creds = get_tc_creds()
         user.tc_access_token = tc_creds["access_token"]
         user.tc_refresh_token = tc_creds["refresh_token"]
         print('--TC credentials updated--')
+    
+    new_token = refresh_token_if_expired(user.tc_access_token, user.tc_refresh_token)
+    if new_token != user.tc_access_token:
+        user.tc_access_token = new_token
+    
+    # Commit changes to database
+    db.commit()
+    db.refresh(user)        
