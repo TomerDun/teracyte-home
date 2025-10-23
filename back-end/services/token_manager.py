@@ -23,12 +23,12 @@ def refresh_token_if_expired(access_token: str, refresh_token: str, expires_at: 
             "expires_at": tc_creds["expires_at"]
         }
     
-    # Check if token is expired or will expire within 5 minutes (buffer)
+    # Check if token is expired or will expire within 5 seconds (buffer)
     current_time = datetime.utcnow()
-    buffer_time = timedelta(minutes=5)
+    buffer_time = timedelta(seconds=5)
     
     if current_time < (expires_at - buffer_time):
-        # Token is still valid and has more than 5 minutes left - return original
+        # Token is still valid and has more than 5 seconds left - return original
         print('--✅ Access token is valid--', flush=True)
         return {
             "access_token": access_token,
