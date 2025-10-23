@@ -7,7 +7,7 @@ from models.image_data import ImageData
 from services.tc_image_data import fetch_image_metadata, fetch_image_file
 import base64
 import os
-from validators.image_data_validator import validate_metadata
+from validators.image_data_validator import validate_metadata, validate_image_file
 
 def check_new_images(user: User, db: Session):
     """
@@ -41,7 +41,12 @@ def check_new_images(user: User, db: Session):
         return False
     
     new_tc_image_file = new_tc_image_data['image_data_base64']
-    # print('new_tc_image: ', new_tc_image_file, flush=True)    
+    
+    # Write image bytes to file    
+    
+    image_bytes = base64.b64decode(new_tc_image_file)        
+    if not validate_image_file(image_bytes):
+        return False
     
     # Save image to filesystem    
     filename = f"{latest_ct_metadata['image_id']}.png"    
@@ -51,8 +56,7 @@ def check_new_images(user: User, db: Session):
     
     relative_path = f"/static/cell_images/raw/{filename}" 
     
-    # Write image bytes to file    
-    image_bytes = base64.b64decode(new_tc_image_file)        
+    
     
     with open(file_path, "wb") as f:
         f.write(image_bytes)
