@@ -14,7 +14,7 @@ export default function ImageDisplayCard({ imageFilePath }: ImageDisplayCardProp
   const fullImageUrl = SERVER_BASE_URL + imageFilePath;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl h-full w-full flex items-center justify-center p-6">
+    <div className="bg-white border border-gray-200 rounded-xl h-full w-full flex items-center justify-center p-2">
       {imageFilePath ?
         <img
           src={fullImageUrl}

@@ -74,19 +74,19 @@ export default function HomePage() {
     }
     return (
         <div id="home-page-container" className="h-full">
-            <div id="header-container" className="">
-                Image Analytics Dashboard
+            <div id="header-container" className="text-center mb-6">
+                <h1>Image Analytics Dashboard</h1>
             </div>
             <div id="main-container" className="flex gap-4 h-full">
 
-                <div id="metadata-container" className="h-full w-[20%]">
+                <div id="metadata-container" className="h-full w-[15%] min-w-[250px]">
                     <MetadataCard metadata={imageMetadata} />
                 </div>
-                <div id="display-container" className="h-full w-[50%]">
+                <div id="display-container" className="h-full w-[45%]">
                     <ImageDisplayCard imageFilePath={imageFilePath} />
                 </div>
-                <div id="charts-container" className="h-full w-[30%]">
-                    {histogramData ? <Histogram histogram={histogramData} /> : <LoadingSpinner size={12}/>}
+                <div id="charts-container" className="h-full w-[35%] bg-white rounded-xl border border-gray-200">
+                    {histogramData ? <Histogram histogram={histogramData} /> : <div className="h-full flex justify-center items-center"><LoadingSpinner size={12}/></div>}
                 </div>
             </div>
         </div>
