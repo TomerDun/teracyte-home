@@ -12,7 +12,6 @@ from controllers.image_data import check_new_images
 # Create image_data router
 router = APIRouter(
     prefix="/images",
-    tags=["Images"]
 )
 
 

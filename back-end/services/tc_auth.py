@@ -44,8 +44,8 @@ def refresh_tc_token(refresh_token: str):
     # Make POST request to refresh token
     response = httpx.post(
         url,
-        headers={
-            "Authorization": f"Bearer {refresh_token}"
+        json={
+            "refresh_token": refresh_token
         }
     )
     

@@ -20,19 +20,21 @@ def check_new_images(user: User, db: Session):
         Response with new images data
     """
     
-    latest_ct_metadata = fetch_image_metadata(user.tc_access_token)        
+    latest_ct_metadata = fetch_image_metadata(user.tc_acc_token, user.tc_refresh_token)        
+    print('ct metadata: ', latest_ct_metadata, flush=True)
     latest_db_img = db.query(ImageData).order_by(ImageData.created_at.desc()).first()
             
-    if latest_ct_metadata.image_id == latest_db_img.tc_image_id:
+    if latest_ct_metadata['image_id'] == latest_db_img.tc_image_id:
         return False
 
     # New image found
     print('--new image_id found, fetching image file--')
-    new_tc_image_file = fetch_image_file(user.tc_access_token).image_data_base64
+    new_tc_image_file = fetch_image_file(user.tc_acc_token)
+    print('new_tc_image: ', new_tc_image_file, flush=True)
     # TODO: Error handling
     
     # Save image to filesystem    
-    filename = f"{latest_ct_metadata.image_id}.png"    
+    filename = f"{latest_ct_metadata['image_id']}.png"    
     static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "cell_images", "raw")    
     os.makedirs(static_dir, exist_ok=True) # Ensure directory exists
     file_path = os.path.join(static_dir, filename)

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, Depends
+from fastapi import FastAPI, APIRouter, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
@@ -85,6 +85,21 @@ async def test_create_user(user_data: UserCreate, db: Session = Depends(get_db))
     db.refresh(db_user)
     
     return db_user
+
+# Testing
+@api_router.post('/test-token')
+async def test_token_format(req: Request):
+    """
+    Test endpoint to verify token format
+    """
+    from services.token_manager import verify_token_format
+    body = await req.json()
+    
+    is_valid_format = verify_token_format(body.get('token'))
+    
+    return {        
+        "is_valid_format": is_valid_format
+    }
 
 
 # Include routers
