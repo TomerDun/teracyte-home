@@ -29,6 +29,7 @@ def get_current_user(
         HTTPException: If token is invalid or user not found
     """
     token = credentials.credentials
+    print('--get_current_user token: ', token, flush=True)
     
     # Decode the JWT token
     payload = decode_access_token(token)

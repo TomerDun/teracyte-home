@@ -84,9 +84,10 @@ def decode_access_token(token: str) -> Optional[dict]:
         
     Returns:
         Decoded token data or None if invalid
-    """
+    """    
     try:
         payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=[os.getenv("JWT_ALGORITHM")])
         return payload
-    except JWTError:
+    except JWTError as e:
+        print('--error decoding token: ', e, flush=True)
         return None
