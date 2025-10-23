@@ -1,4 +1,3 @@
-import defaultImage from '../../assets/images/ex-img.png';
 import { SERVER_BASE_URL } from '../../services/apiService';
 import LoadingImage from '../misc/LoadingImage';
 

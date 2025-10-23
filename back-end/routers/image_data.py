@@ -49,3 +49,48 @@ async def get_latest_image(current_user: User = Depends(get_current_user),
     
     res = image_data_controller.get_latest_image_data(db=db)
     return res
+
+
+@router.get('/history')
+async def get_history(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Get image data history with tc_image_id, classification_label, and created_at.
+    Returns data sorted by created_at from newest to oldest.
+    
+    Requires authentication via JWT token in Authorization header.
+    
+    Args:
+        current_user: Authenticated user (from JWT token)
+        db: Database session
+        
+    Returns:
+        List of image history records
+    """
+    res = image_data_controller.get_image_data_history(db=db)
+    return res
+
+
+@router.get('/{image_id}')
+async def get_image_by_id(
+    image_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Get image data by tc_image_id.
+    
+    Requires authentication via JWT token in Authorization header.
+    
+    Args:
+        image_id: The tc_image_id from URL parameter
+        current_user: Authenticated user (from JWT token)
+        db: Database session
+        
+    Returns:
+        ImageData object or None if not found
+    """
+    res = image_data_controller.get_image_data_by_id(image_id=image_id, db=db)
+    return res

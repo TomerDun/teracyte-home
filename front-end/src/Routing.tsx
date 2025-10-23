@@ -6,6 +6,7 @@ export default function Routing() {
     return (
         <Routes>
             <Route path='/login' element={<LoginPage />} />
+            <Route path='/images/:selectedImageId' element={<HomePage />} />
             <Route path='/' element={<HomePage />} />
         </Routes>
     )
